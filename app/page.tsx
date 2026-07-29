@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 const lessons = [
   { number: "01", title: "Visual Hierarchy", note: "Direct attention with intention.", progress: 68 },
@@ -18,10 +18,47 @@ const observations = [
 
 export default function Home() {
   const [view, setView] = useState<"studio" | "lesson">("studio");
+  const [activeLesson, setActiveLesson] = useState(0);
   const [headline, setHeadline] = useState(66);
   const [details, setDetails] = useState(22);
   const [spacing, setSpacing] = useState(28);
+  const [posterColor, setPosterColor] = useState("#fffdf6");
+  const [inkColor, setInkColor] = useState("#1d1c1a");
+  const [accentColor, setAccentColor] = useState("#701f32");
+  const [headlineStyle, setHeadlineStyle] = useState<"bold" | "serif" | "condensed">("bold");
+  const [showRule, setShowRule] = useState(true);
   const [completed, setCompleted] = useState(false);
+  const [completedLessons, setCompletedLessons] = useState<number[]>([]);
+  const [uploads, setUploads] = useState<{ name: string; url: string; type: string }[]>([]);
+
+  const currentLesson = lessons[activeLesson];
+  const openLesson = (index: number) => {
+    setActiveLesson(index);
+    setView("lesson");
+    setCompleted(completedLessons.includes(index));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const moveLesson = (direction: -1 | 1) => {
+    const next = Math.max(0, Math.min(lessons.length - 1, activeLesson + direction));
+    openLesson(next);
+  };
+
+  const completePractice = () => {
+    setCompleted(true);
+    setCompletedLessons((current) => current.includes(activeLesson) ? current : [...current, activeLesson]);
+  };
+
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    const nextUploads = files.map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      type: file.type,
+    }));
+    setUploads((current) => [...current, ...nextUploads]);
+    event.target.value = "";
+  };
 
   useEffect(() => {
     const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
@@ -78,7 +115,7 @@ export default function Home() {
         </button>
         <nav aria-label="Primary navigation">
           <button className={view === "studio" ? "active" : ""} onClick={() => setView("studio")}>Studio</button>
-          <button className={view === "lesson" ? "active" : ""} onClick={() => setView("lesson")}>Learn</button>
+          <button className={view === "lesson" ? "active" : ""} onClick={() => openLesson(activeLesson)}>Learn</button>
           <a href="#project">Projects</a>
           <a href="#inspiration">Inspiration</a>
         </nav>
@@ -93,7 +130,7 @@ export default function Home() {
               <div data-reveal>
                 <h1>Learn to see what<br /><em>others overlook.</em></h1>
                 <p className="lede">The book gives you the principles. This studio helps you practice them—one deliberate decision at a time.</p>
-                <button className="primary" onClick={() => setView("lesson")}>Continue learning</button>
+                <button className="primary" onClick={() => openLesson(activeLesson)}>Continue learning</button>
               </div>
               <div className="today-card" data-reveal>
                 <div className="card-kicker">Today in the studio</div>
@@ -115,14 +152,16 @@ export default function Home() {
             <span className="section-number" aria-hidden="true">01</span>
             <div className="section-heading">
               <div><span className="eyebrow">The foundations</span><h2>Five ways of seeing</h2></div>
-              <button className="text-link" onClick={() => setView("lesson")}>View curriculum</button>
+              <button className="text-link" onClick={() => openLesson(activeLesson)}>View curriculum</button>
             </div>
             <div className="lesson-list">
-              {lessons.map((lesson) => (
-                <button className="lesson-row" key={lesson.number} onClick={() => setView("lesson")} data-reveal>
+              {lessons.map((lesson, index) => (
+                <button className="lesson-row" key={lesson.number} onClick={() => openLesson(index)} data-reveal>
                   <span className="lesson-number">{lesson.number}</span>
                   <span><strong>{lesson.title}</strong><small>{lesson.note}</small></span>
-                  <span className="mini-progress"><i style={{ width: `${lesson.progress}%` }} /></span>
+                  <span className="lesson-row-status">
+                    {completedLessons.includes(index) ? <b>Complete ✓</b> : <span className="mini-progress"><i style={{ width: `${index === activeLesson ? 68 : lesson.progress}%` }} /></span>}
+                  </span>
                 </button>
               ))}
             </div>
@@ -168,39 +207,94 @@ export default function Home() {
       ) : (
         <section className="lesson-page view-enter">
           <aside className="lesson-progress" aria-label="Lesson progress">
-            <span>01</span>
-            <i><b /></i>
+            <span>{currentLesson.number}</span>
+            <i><b style={{ height: `${((activeLesson + 1) / lessons.length) * 100}%` }} /></i>
             <small>05</small>
           </aside>
-          <button className="back-link" onClick={() => setView("studio")}>Back to studio</button>
+          <div className="lesson-toolbar">
+            <button className="back-link" onClick={() => setView("studio")}>Back to studio</button>
+            <div className="lesson-switcher" aria-label="Lesson navigation">
+              {lessons.map((lesson, index) => (
+                <button
+                  key={lesson.number}
+                  className={index === activeLesson ? "active" : ""}
+                  onClick={() => openLesson(index)}
+                  aria-label={`Open lesson ${lesson.number}: ${lesson.title}`}
+                >
+                  {completedLessons.includes(index) ? "✓" : lesson.number}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="lesson-intro" data-reveal>
-            <div><span className="eyebrow">Foundation 01 · 12 minutes</span><h1>Visual<br /><em>Hierarchy</em></h1></div>
+            <div><span className="eyebrow">Foundation {currentLesson.number} · 12 minutes</span><h1>{currentLesson.title.split(" ")[0]}<br /><em>{currentLesson.title.split(" ").slice(1).join(" ") || "Practice"}</em></h1></div>
             <div className="lesson-definition"><span>THE QUESTION</span><p>If someone remembers only one thing, what should it be?</p></div>
           </div>
+          {completed && (
+            <div className="completion-banner" role="status">
+              <span className="completion-check">✓</span>
+              <div><strong>Practice complete</strong><p>Your work is saved in this session. Continue when you are ready.</p></div>
+              {activeLesson < lessons.length - 1 && <button className="primary" onClick={() => moveLesson(1)}>Next lesson</button>}
+            </div>
+          )}
           <div className="exercise-shell" data-reveal>
             <div className="exercise-copy">
-              <span className="eyebrow">Practice 01</span>
+              <span className="eyebrow">Practice {currentLesson.number}</span>
               <h2>Make the message impossible to miss.</h2>
               <p>Adjust the relationship between the elements. You are not decorating a flyer—you are deciding what the viewer understands first.</p>
               <label>Headline scale <output>{headline}</output><input type="range" min="34" max="82" value={headline} onChange={(e) => setHeadline(Number(e.target.value))} /></label>
               <label>Detail scale <output>{details}</output><input type="range" min="14" max="44" value={details} onChange={(e) => setDetails(Number(e.target.value))} /></label>
               <label>Breathing room <output>{spacing}</output><input type="range" min="8" max="56" value={spacing} onChange={(e) => setSpacing(Number(e.target.value))} /></label>
+              <fieldset className="design-controls">
+                <legend>Change the visual direction</legend>
+                <label>Background <input type="color" value={posterColor} onChange={(e) => setPosterColor(e.target.value)} /></label>
+                <label>Type color <input type="color" value={inkColor} onChange={(e) => setInkColor(e.target.value)} /></label>
+                <label>Accent <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} /></label>
+                <label className="select-control">Headline style
+                  <select value={headlineStyle} onChange={(e) => setHeadlineStyle(e.target.value as "bold" | "serif" | "condensed")}>
+                    <option value="bold">Bold sans</option>
+                    <option value="serif">Editorial serif</option>
+                    <option value="condensed">Condensed</option>
+                  </select>
+                </label>
+                <label className="toggle-control"><input type="checkbox" checked={showRule} onChange={(e) => setShowRule(e.target.checked)} /> Show divider</label>
+              </fieldset>
               <div className="feedback"><span>Studio note</span><p>{feedback}</p></div>
             </div>
             <div className="canvas-wrap">
-              <div className="practice-canvas" style={{ gap: `${spacing}px` }}>
+              <div className={`practice-canvas headline-${headlineStyle}`} style={{ gap: `${spacing}px`, backgroundColor: posterColor, color: inkColor, boxShadow: `12px 12px 0 ${accentColor}` }}>
                 <span className="canvas-label">RIVERSIDE ARTS COUNCIL PRESENTS</span>
                 <strong style={{ fontSize: `${headline}px` }}>OPEN<br />STUDIO</strong>
-                <div className="canvas-rule" />
+                {showRule && <div className="canvas-rule" style={{ backgroundColor: accentColor }} />}
                 <p style={{ fontSize: `${details}px` }}>Saturday, August 16<br />10 AM—6 PM</p>
                 <small>Meet the artists. See the work.<br />Leave with a new perspective.</small>
               </div>
               <div className="canvas-actions">
-                <button onClick={() => { setHeadline(66); setDetails(22); setSpacing(28); setCompleted(false); }}>Reset</button>
-                <button className="primary" onClick={() => setCompleted(true)}>{completed ? "Practice complete ✓" : "Complete practice"}</button>
+                <button onClick={() => { setHeadline(66); setDetails(22); setSpacing(28); setPosterColor("#fffdf6"); setInkColor("#1d1c1a"); setAccentColor("#701f32"); setHeadlineStyle("bold"); setShowRule(true); setCompleted(false); }}>Reset</button>
+                <button className={`primary ${completed ? "complete-button" : ""}`} onClick={completePractice}>{completed ? "Completed ✓" : "Mark practice complete"}</button>
               </div>
+              <section className="upload-work">
+                <div><span className="eyebrow">Your work</span><h3>Bring your practice into the studio.</h3><p>Upload a poster, sketch, screenshot, or PDF you made in Canva or Adobe.</p></div>
+                <label className="upload-button">Upload work<input type="file" accept="image/*,.pdf" multiple onChange={handleUpload} /></label>
+                {uploads.length > 0 && (
+                  <div className="upload-grid">
+                    {uploads.map((upload, index) => (
+                      <article key={`${upload.name}-${index}`}>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Local object URL preview. */}
+                        {upload.type.startsWith("image/") ? <img src={upload.url} alt="" /> : <div className="pdf-preview">PDF</div>}
+                        <span>{upload.name}</span>
+                        <button aria-label={`Remove ${upload.name}`} onClick={() => setUploads((current) => current.filter((_, itemIndex) => itemIndex !== index))}>Remove</button>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
             </div>
           </div>
+          <nav className="lesson-bottom-nav" aria-label="Previous and next lessons">
+            <button disabled={activeLesson === 0} onClick={() => moveLesson(-1)}><span>Previous</span><strong>{activeLesson > 0 ? lessons[activeLesson - 1].title : "Start"}</strong></button>
+            <button disabled={activeLesson === lessons.length - 1} onClick={() => moveLesson(1)}><span>Next</span><strong>{activeLesson < lessons.length - 1 ? lessons[activeLesson + 1].title : "Complete"}</strong></button>
+          </nav>
         </section>
       )}
 
