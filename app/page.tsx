@@ -162,7 +162,7 @@ export default function Home() {
       <footer>
         <div className="mark">CS</div>
         <p>Observe carefully.<br />Decide deliberately.</p>
-        <span>The Creative Studio Companion · First Edition</span>
+        <span>The Creative Studio · First Edition</span>
       </footer>
     </main>
   );
