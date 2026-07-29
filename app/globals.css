@@ -37,7 +37,6 @@ em { color: var(--wine); font-weight: 400; }
 .lede { max-width: 580px; color: var(--muted); font-size: 17px; line-height: 1.65; }
 .primary, .paper-button { border: 0; padding: 16px 22px; background: var(--wine); color: white; cursor: pointer; margin-top: 15px; font-weight: 700; font-size: 13px; }
 .primary:hover { background: var(--wine-dark); }
-.primary span { padding-left: 30px; }
 .today-card { border-top: 1px solid var(--ink); padding-top: 16px; position: relative; }
 .card-kicker { font-size: 10px; text-transform: uppercase; letter-spacing: .15em; }
 .lesson-index { font: italic 72px/1 Georgia, serif; color: var(--wine); margin: 38px 0 6px; }
@@ -56,13 +55,12 @@ em { color: var(--wine); font-weight: 400; }
 .section-heading h2 { margin: 0; font: 400 clamp(38px, 4vw, 62px)/1 Georgia, serif; letter-spacing: -.04em; }
 .text-link { border: 0; border-bottom: 1px solid var(--ink); background: none; padding: 8px 0; cursor: pointer; }
 .lesson-list { border-top: 1px solid var(--rule); }
-.lesson-row { width: 100%; display: grid; grid-template-columns: 80px minmax(220px, 1fr) 180px 40px; align-items: center; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: transparent; padding: 27px 0; cursor: pointer; color: var(--ink); }
+.lesson-row { width: 100%; display: grid; grid-template-columns: 80px minmax(220px, 1fr) 180px; align-items: center; text-align: left; border: 0; border-bottom: 1px solid var(--rule); background: transparent; padding: 27px 0; cursor: pointer; color: var(--ink); }
 .lesson-row:hover { padding-left: 10px; background: rgba(255,255,255,.25); }
 .lesson-number { color: var(--wine); font: italic 20px Georgia, serif; }
 .lesson-row strong { font: 400 25px Georgia, serif; display: block; }
 .lesson-row small { color: var(--muted); display: block; padding-top: 7px; }
 .mini-progress { margin: 0; }
-.arrow { font-size: 18px; text-align: right; }
 
 .project-section { background: var(--ink); color: white; display: grid; grid-template-columns: 1.2fr .8fr; gap: 12vw; align-items: center; }
 .eyebrow.light { color: #d9c3c8; }
