@@ -54,7 +54,7 @@ export default function Home() {
               <div>
                 <h1>Learn to see what<br /><em>others overlook.</em></h1>
                 <p className="lede">The book gives you the principles. This studio helps you practice them—one deliberate decision at a time.</p>
-                <button className="primary" onClick={() => setView("lesson")}>Continue learning <span>→</span></button>
+                <button className="primary" onClick={() => setView("lesson")}>Continue learning</button>
               </div>
               <div className="today-card">
                 <div className="card-kicker">Today in the studio</div>
@@ -75,7 +75,7 @@ export default function Home() {
           <section className="section lessons-section">
             <div className="section-heading">
               <div><span className="eyebrow">The foundations</span><h2>Five ways of seeing</h2></div>
-              <button className="text-link" onClick={() => setView("lesson")}>View curriculum →</button>
+              <button className="text-link" onClick={() => setView("lesson")}>View curriculum</button>
             </div>
             <div className="lesson-list">
               {lessons.map((lesson) => (
@@ -83,7 +83,6 @@ export default function Home() {
                   <span className="lesson-number">{lesson.number}</span>
                   <span><strong>{lesson.title}</strong><small>{lesson.note}</small></span>
                   <span className="mini-progress"><i style={{ width: `${lesson.progress}%` }} /></span>
-                  <span className="arrow">↗</span>
                 </button>
               ))}
             </div>
@@ -97,7 +96,7 @@ export default function Home() {
               <div className="phase-list">
                 <span>01 Research</span><span>02 Strategy</span><span>03 System</span><span>04 Application</span>
               </div>
-              <button className="paper-button">Open project brief →</button>
+              <button className="paper-button">Open project brief</button>
             </div>
             <div className="project-poster" aria-label="Farmers Market Identity project preview">
               <span>FIELD NOTES / 001</span>
@@ -127,7 +126,7 @@ export default function Home() {
         </>
       ) : (
         <section className="lesson-page">
-          <button className="back-link" onClick={() => setView("studio")}>← Back to studio</button>
+          <button className="back-link" onClick={() => setView("studio")}>Back to studio</button>
           <div className="lesson-intro">
             <div><span className="eyebrow">Foundation 01 · 12 minutes</span><h1>Visual<br /><em>Hierarchy</em></h1></div>
             <div className="lesson-definition"><span>THE QUESTION</span><p>If someone remembers only one thing, what should it be?</p></div>
