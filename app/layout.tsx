@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "The Creative Studio Companion",
+  title: "The Creative Studio",
   description: "Learn to see, think, and work like a designer.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
 };
