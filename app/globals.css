@@ -8,7 +8,7 @@
   --rule: #cbc6ba;
   --wine: #6f2638;
   --wine-dark: #511929;
-  --yellow: #e5c84d;
+  --yellow: #e3cf78;
   --olive: #68734a;
 }
 
@@ -70,8 +70,8 @@ em { color: var(--wine); font-weight: 400; }
 .project-copy > p { max-width: 580px; color: #b8b4aa; line-height: 1.7; }
 .phase-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 35px 0; color: #d0cbc1; font-size: 11px; letter-spacing: .08em; }
 .paper-button { background: var(--paper); color: var(--ink); }
-.project-poster { min-height: 570px; background: var(--yellow); color: var(--ink); padding: 27px; position: relative; display: flex; flex-direction: column; overflow: hidden; box-shadow: 25px 25px 0 var(--wine); }
-.project-poster > span { font-size: 9px; letter-spacing: .18em; }
+.project-poster { min-height: 570px; background: var(--paper); color: var(--ink); padding: 27px; position: relative; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--rule); box-shadow: 25px 25px 0 var(--wine); }
+.project-poster > span { width: fit-content; background: var(--yellow); padding: 7px 9px; font-size: 9px; letter-spacing: .18em; }
 .sun { position: absolute; right: -70px; top: 50px; width: 245px; height: 245px; background: var(--wine); border-radius: 50%; }
 .project-poster h3 { font: 700 clamp(55px, 6vw, 91px)/.78 Arial, sans-serif; letter-spacing: -.08em; text-transform: uppercase; z-index: 1; margin: auto 0 22px; }
 .project-poster p { font: italic 20px Georgia, serif; z-index: 1; }
@@ -84,7 +84,8 @@ em { color: var(--wine); font-weight: 400; }
 .observation h3 { font: 400 23px Georgia, serif; margin: auto 0 7px; }
 .observation p { font-size: 10px; color: var(--muted); margin: 0; }
 .observation.cream { background: #e4ded1; }
-.observation.yellow { background: var(--yellow); }
+.observation.yellow { background: var(--paper); border: 1px solid var(--rule); }
+.observation.yellow > span { width: fit-content; background: var(--yellow); padding: 6px 8px; }
 .observation.wine { background: var(--wine); color: white; }
 .observation.wine p { color: #d6bbc2; }
 .visual { min-height: 170px; display: flex; align-items: center; justify-content: center; gap: 13px; }
@@ -112,8 +113,8 @@ input[type="range"] { grid-column: 1 / -1; accent-color: var(--wine); width: 100
 .feedback span { font-size: 9px; text-transform: uppercase; letter-spacing: .15em; font-weight: 700; }
 .feedback p { font: italic 16px/1.4 Georgia, serif; margin: 8px 0 0; }
 .canvas-wrap { padding: 45px; background: #d9d4c9; display: flex; flex-direction: column; justify-content: center; }
-.practice-canvas { aspect-ratio: 4 / 5; max-height: 650px; background: var(--yellow); padding: 9%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; box-shadow: 12px 12px 0 var(--wine); transition: gap .15s ease; }
-.canvas-label { font-size: 8px; letter-spacing: .15em; }
+.practice-canvas { aspect-ratio: 4 / 5; max-height: 650px; background: var(--paper); border: 1px solid var(--rule); padding: 9%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; box-shadow: 12px 12px 0 var(--wine); transition: gap .15s ease; }
+.canvas-label { width: fit-content; background: var(--yellow); padding: 6px 8px; font-size: 8px; letter-spacing: .15em; }
 .practice-canvas strong { font-family: Arial, sans-serif; line-height: .75; letter-spacing: -.09em; transition: font-size .15s ease; }
 .canvas-rule { height: 4px; background: var(--ink); width: 100%; }
 .practice-canvas p { font-weight: 700; line-height: 1.05; margin: 0; transition: font-size .15s ease; }
