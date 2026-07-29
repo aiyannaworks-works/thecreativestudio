@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const lessons = [
   { number: "01", title: "Visual Hierarchy", note: "Direct attention with intention.", progress: 68 },
@@ -22,6 +22,45 @@ export default function Home() {
   const [details, setDetails] = useState(22);
   const [spacing, setSpacing] = useState(28);
   const [completed, setCompleted] = useState(false);
+
+  useEffect(() => {
+    const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.14 },
+    );
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [view]);
+
+  useEffect(() => {
+    let frame = 0;
+    const updateProjectMotion = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const project = document.querySelector<HTMLElement>(".project-poster");
+        if (!project) return;
+        const rect = project.getBoundingClientRect();
+        const shift = Math.max(-22, Math.min(22, (window.innerHeight / 2 - rect.top) * 0.035));
+        project.style.setProperty("--project-shift", `${shift}px`);
+      });
+    };
+
+    updateProjectMotion();
+    window.addEventListener("scroll", updateProjectMotion, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateProjectMotion);
+    };
+  }, [view]);
 
   const feedback = useMemo(() => {
     const gap = headline - details;
@@ -47,16 +86,16 @@ export default function Home() {
       </header>
 
       {view === "studio" ? (
-        <>
+        <div className="view-enter">
           <section className="hero">
             <div className="eyebrow">Your studio · Week 01</div>
             <div className="hero-grid">
-              <div>
+              <div data-reveal>
                 <h1>Learn to see what<br /><em>others overlook.</em></h1>
                 <p className="lede">The book gives you the principles. This studio helps you practice them—one deliberate decision at a time.</p>
                 <button className="primary" onClick={() => setView("lesson")}>Continue learning</button>
               </div>
-              <div className="today-card">
+              <div className="today-card" data-reveal>
                 <div className="card-kicker">Today in the studio</div>
                 <div className="lesson-index">01</div>
                 <h2>Visual Hierarchy</h2>
@@ -67,19 +106,20 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="manifesto">
+          <section className="manifesto" data-reveal>
             <p>Design is not decoration.</p>
             <h2>It is the practice of reducing uncertainty.</h2>
           </section>
 
           <section className="section lessons-section">
+            <span className="section-number" aria-hidden="true">01</span>
             <div className="section-heading">
               <div><span className="eyebrow">The foundations</span><h2>Five ways of seeing</h2></div>
               <button className="text-link" onClick={() => setView("lesson")}>View curriculum</button>
             </div>
             <div className="lesson-list">
               {lessons.map((lesson) => (
-                <button className="lesson-row" key={lesson.number} onClick={() => setView("lesson")}>
+                <button className="lesson-row" key={lesson.number} onClick={() => setView("lesson")} data-reveal>
                   <span className="lesson-number">{lesson.number}</span>
                   <span><strong>{lesson.title}</strong><small>{lesson.note}</small></span>
                   <span className="mini-progress"><i style={{ width: `${lesson.progress}%` }} /></span>
@@ -89,7 +129,7 @@ export default function Home() {
           </section>
 
           <section id="project" className="section project-section">
-            <div className="project-copy">
+            <div className="project-copy" data-reveal>
               <span className="eyebrow light">Studio project 01</span>
               <h2>Build an identity<br />for a living community.</h2>
               <p>The farmers market project takes you from field research to a flexible visual system. You will not make one pretty logo. You will build something other people can use.</p>
@@ -98,9 +138,9 @@ export default function Home() {
               </div>
               <button className="paper-button">Open project brief</button>
             </div>
-            <div className="project-poster" aria-label="Farmers Market Identity project preview">
+            <div className="project-poster" aria-label="Farmers Market Identity project preview" data-reveal>
               <span>FIELD NOTES / 001</span>
-              <div className="sun" />
+              <div className="sun" aria-hidden="true" />
               <h3>Saturday<br />Market</h3>
               <p>Grown here.<br />Shared here.</p>
               <div className="poster-foot"><span>8—1</span><span>RAIN<br />OR SHINE</span></div>
@@ -108,13 +148,14 @@ export default function Home() {
           </section>
 
           <section id="inspiration" className="section inspiration-section">
+            <span className="section-number" aria-hidden="true">02</span>
             <div className="section-heading">
               <div><span className="eyebrow">Your visual library</span><h2>What are you noticing?</h2></div>
               <button className="text-link">Add a reference +</button>
             </div>
             <div className="observation-grid">
               {observations.map((item, index) => (
-                <article className={`observation ${item.color}`} key={item.title}>
+                <article className={`observation ${item.color}`} key={item.title} data-reveal>
                   <span>{item.tag}</span>
                   <div className={`visual visual-${index}`}><i /><b>Aa</b><i /></div>
                   <h3>{item.title}</h3>
@@ -123,15 +164,20 @@ export default function Home() {
               ))}
             </div>
           </section>
-        </>
+        </div>
       ) : (
-        <section className="lesson-page">
+        <section className="lesson-page view-enter">
+          <aside className="lesson-progress" aria-label="Lesson progress">
+            <span>01</span>
+            <i><b /></i>
+            <small>05</small>
+          </aside>
           <button className="back-link" onClick={() => setView("studio")}>Back to studio</button>
-          <div className="lesson-intro">
+          <div className="lesson-intro" data-reveal>
             <div><span className="eyebrow">Foundation 01 · 12 minutes</span><h1>Visual<br /><em>Hierarchy</em></h1></div>
             <div className="lesson-definition"><span>THE QUESTION</span><p>If someone remembers only one thing, what should it be?</p></div>
           </div>
-          <div className="exercise-shell">
+          <div className="exercise-shell" data-reveal>
             <div className="exercise-copy">
               <span className="eyebrow">Practice 01</span>
               <h2>Make the message impossible to miss.</h2>
