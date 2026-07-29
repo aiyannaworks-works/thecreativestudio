@@ -77,3 +77,6 @@ The experience is crafted to feel like a blend of an independent design publicat
 ```bash
 git clone [https://github.com/YOUR-USERNAME/creative-studio-companion.git](https://github.com/YOUR-USERNAME/creative-studio-companion.git)
 cd creative-studio-companion
+
+
+<!-- Trigger production build for the completed companion app. -->
