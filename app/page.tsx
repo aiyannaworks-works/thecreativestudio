@@ -13,6 +13,23 @@ type Lesson = {
   coaching: string[];
 };
 
+const practiceMeta = [
+  { title: "Build the reading order.", intro: "Change the relationship between the message and its details until the intended sequence is unmistakable." },
+  { title: "Edit until the space speaks.", intro: "Remove supporting elements and open the composition. Notice when quiet becomes clarity—and when it becomes emptiness." },
+  { title: "Direct the voice of the words.", intro: "Keep the message constant while changing its typographic character. Judge the feeling before reading the sentence." },
+  { title: "Create one decisive difference.", intro: "Choose what dominates through scale, weight, and color. Contrast should clarify the idea, not decorate it." },
+  { title: "Reveal the invisible system.", intro: "Build a layout with columns, alignment, and rhythm. Then bend the system without losing coherence." },
+  { title: "Practice the discipline of less.", intro: "Begin with abundance, then decide which idea deserves to survive. Every remaining element must earn its place." },
+  { title: "Build a recognizable ritual.", intro: "Combine product truth, sensory language, repetition, and atmosphere into a small world people can recognize." },
+  { title: "Control the reader’s pace.", intro: "Move through a cover, opener, and spread. Use scale, columns, cropping, and silence to choreograph attention." },
+  { title: "Shift the emotional territory.", intro: "Art-direct the same ordinary object for different kinds of desire without changing the product itself." },
+  { title: "Make one idea travel.", intro: "Translate a central campaign belief across channels. The execution should adapt while the idea remains intact." },
+  { title: "Direct the world, not one image.", intro: "Set the casting, light, location, type, and movement. Look for the decision that breaks the spell." },
+  { title: "Create recognition without a logo.", intro: "Choose repeatable brand behaviors, then remove the name. Test whether the system still feels unmistakably itself." },
+  { title: "Find the strategy beneath the surface.", intro: "Break a campaign into its idea, insight, story, and channel roles. Analysis should reveal a reusable principle." },
+  { title: "Lead the review.", intro: "Prioritize the feedback that strengthens the central idea. Creative direction is judgment made useful to other people." },
+];
+
 const lessons: Lesson[] = [
   { number: "01", title: "Visual Hierarchy", note: "Direct attention with intention.", question: "If someone remembers only one thing, what should it be?", concepts: ["Dominance", "Reading order", "Visual weight"], project: "Create one clear reading path through a crowded event poster.", reflections: ["What leads?", "What competes?", "What could disappear?"], coaching: ["What deserves more emphasis?", "What could be removed entirely?", "Are you designing for attention or for memory?"] },
   { number: "02", title: "White Space", note: "Give information room to breathe.", question: "What would happen if you made this quieter instead of louder?", concepts: ["Restraint", "Grouping", "Pacing"], project: "Edit a dense layout until every remaining element earns its space.", reflections: ["Where does the eye rest?", "What feels crowded?", "What became clearer after editing?"], coaching: ["What would happen if you made this quieter instead of louder?", "Is the space creating meaning or merely emptiness?", "Where does the composition need a pause?"] },
@@ -47,14 +64,6 @@ export default function Home() {
   const [view, setView] = useState<"studio" | "lesson" | "workspace">("studio");
   const [activeLesson, setActiveLesson] = useState(0);
   const [activeWorkspace, setActiveWorkspace] = useState(0);
-  const [headline, setHeadline] = useState(66);
-  const [details, setDetails] = useState(22);
-  const [spacing, setSpacing] = useState(28);
-  const [posterColor, setPosterColor] = useState("#fffdf6");
-  const [inkColor, setInkColor] = useState("#1d1c1a");
-  const [accentColor, setAccentColor] = useState("#701f32");
-  const [headlineStyle, setHeadlineStyle] = useState<"bold" | "serif" | "condensed">("bold");
-  const [showRule, setShowRule] = useState(true);
   const [completed, setCompleted] = useState(false);
   const [completedLessons, setCompletedLessons] = useState<number[]>([]);
   const [notes, setNotes] = useState<Record<number, string>>({});
@@ -153,12 +162,7 @@ export default function Home() {
     return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", updateProjectMotion); };
   }, [view]);
 
-  const feedback = useMemo(() => {
-    const gap = headline - details;
-    if (gap > 35 && spacing >= 24) return "Strong hierarchy. The message leads; the details support.";
-    if (gap > 20) return "The reading order is emerging. Give the headline more room.";
-    return "The elements are competing. Decide what deserves attention first.";
-  }, [headline, details, spacing]);
+  const coachQuestion = currentLesson.coaching[coachStep % currentLesson.coaching.length];
 
   const coachQuestion = currentLesson.coaching[coachStep % currentLesson.coaching.length];
 
@@ -220,21 +224,7 @@ export default function Home() {
             <div className="concept-grid">{currentLesson.concepts.map((concept, index) => <article key={concept}><span>0{index + 1}</span><h3>{concept}</h3><p>Observe how this principle shapes recognition, meaning, and the audience&apos;s experience.</p></article>)}</div>
           </section>
 
-          <div className="exercise-shell" data-reveal>
-            <div className="exercise-copy">
-              <span className="eyebrow">Interactive practice</span><h2>Make the message impossible to miss.</h2><p>Use the canvas to test hierarchy and visual behavior, then connect the choices to this chapter&apos;s central idea.</p>
-              <label>Headline scale <output>{headline}</output><input type="range" min="34" max="82" value={headline} onChange={(e) => setHeadline(Number(e.target.value))} /></label>
-              <label>Detail scale <output>{details}</output><input type="range" min="14" max="44" value={details} onChange={(e) => setDetails(Number(e.target.value))} /></label>
-              <label>Breathing room <output>{spacing}</output><input type="range" min="8" max="56" value={spacing} onChange={(e) => setSpacing(Number(e.target.value))} /></label>
-              <fieldset className="design-controls"><legend>Change the visual direction</legend><label>Background <input type="color" value={posterColor} onChange={(e) => setPosterColor(e.target.value)} /></label><label>Type color <input type="color" value={inkColor} onChange={(e) => setInkColor(e.target.value)} /></label><label>Accent <input type="color" value={accentColor} onChange={(e) => setAccentColor(e.target.value)} /></label><label className="select-control">Headline style<select value={headlineStyle} onChange={(e) => setHeadlineStyle(e.target.value as "bold" | "serif" | "condensed")}><option value="bold">Bold sans</option><option value="serif">Editorial serif</option><option value="condensed">Condensed</option></select></label><label className="toggle-control"><input type="checkbox" checked={showRule} onChange={(e) => setShowRule(e.target.checked)} /> Show divider</label></fieldset>
-              <div className="feedback"><span>Studio note</span><p>{feedback}</p></div>
-            </div>
-            <div className="canvas-wrap">
-              <div className={`practice-canvas headline-${headlineStyle}`} style={{ gap: `${spacing}px`, backgroundColor: posterColor, color: inkColor, boxShadow: `12px 12px 0 ${accentColor}` }}><span className="canvas-label">THE CREATIVE STUDIO PRESENTS</span><strong style={{ fontSize: `${headline}px` }}>ONE<br />IDEA</strong>{showRule && <div className="canvas-rule" style={{ backgroundColor: accentColor }} />}<p style={{ fontSize: `${details}px` }}>{currentLesson.title}<br />Chapter {currentLesson.number}</p><small>Make the central belief visible.<br />Let every choice reinforce it.</small></div>
-              <div className="canvas-actions"><button onClick={() => { setHeadline(66); setDetails(22); setSpacing(28); setPosterColor("#fffdf6"); setInkColor("#1d1c1a"); setAccentColor("#701f32"); setHeadlineStyle("bold"); setShowRule(true); setCompleted(false); }}>Reset</button><button className={`primary ${completed ? "complete-button" : ""}`} onClick={completePractice}>{completed ? "Completed ✓" : "Mark chapter complete"}</button></div>
-              <UploadWork uploads={uploads} handleUpload={handleUpload} removeUpload={(index) => setUploads((current) => current.filter((_, itemIndex) => itemIndex !== index))} />
-            </div>
-          </div>
+          <PracticeLab key={activeLesson} lessonIndex={activeLesson} lesson={currentLesson} completed={completed} completePractice={completePractice} uploads={uploads} handleUpload={handleUpload} removeUpload={(index) => setUploads((current) => current.filter((_, itemIndex) => itemIndex !== index))} />
 
           <section className="studio-project-card" data-reveal><div><span className="eyebrow">Studio project · Chapter {currentLesson.number}</span><h2>{currentLesson.project}</h2><p>Document the thinking—not only the outcome. Your response is saved automatically on this device.</p></div><textarea aria-label="Studio project response" value={projectResponses[activeLesson] || ""} onChange={(e) => { setProjectResponses((current) => ({ ...current, [activeLesson]: e.target.value })); setSavedProject(false); }} placeholder="Describe your idea, audience, emotional territory, system, and the decisions you intend to test." /><button className="primary" onClick={() => setSavedProject(true)}>{savedProject ? "Project saved ✓" : "Save project"}</button></section>
 
@@ -266,6 +256,138 @@ export default function Home() {
       <footer><div className="mark">CS</div><p>Observe carefully.<br />Decide deliberately.</p><span>The Creative Studio · Expanded Edition</span></footer>
     </main>
   );
+}
+
+function PracticeLab({ lessonIndex, lesson, completed, completePractice, uploads, handleUpload, removeUpload }: {
+  lessonIndex: number;
+  lesson: Lesson;
+  completed: boolean;
+  completePractice: () => void;
+  uploads: { name: string; url: string; type: string }[];
+  handleUpload: (event: ChangeEvent<HTMLInputElement>) => void;
+  removeUpload: (index: number) => void;
+}) {
+  const [primary, setPrimary] = useState(68);
+  const [secondary, setSecondary] = useState(24);
+  const [space, setSpace] = useState(28);
+  const [choice, setChoice] = useState(0);
+  const [choiceTwo, setChoiceTwo] = useState(0);
+  const [showA, setShowA] = useState(true);
+  const [showB, setShowB] = useState(true);
+  const [showC, setShowC] = useState(true);
+  const [background, setBackground] = useState("#fffdf6");
+  const [ink, setInk] = useState("#1d1c1a");
+  const [accent, setAccent] = useState("#701f32");
+
+  const reset = () => {
+    setPrimary(68); setSecondary(24); setSpace(28); setChoice(0); setChoiceTwo(0);
+    setShowA(true); setShowB(true); setShowC(true);
+    setBackground("#fffdf6"); setInk("#1d1c1a"); setAccent("#701f32");
+  };
+
+  const feedback = useMemo(() => {
+    switch (lessonIndex) {
+      case 0: return primary - secondary > 34 ? "The reading order is clear: message first, evidence second." : "The message and details still compete. Create a more decisive relationship.";
+      case 1: return space > 34 && [showA, showB, showC].filter(Boolean).length < 3 ? "The edit creates calm without losing the message." : "Remove one supporting element and give the remaining idea more room.";
+      case 2: return ["Authoritative and direct.", "Editorial and considered.", "Condensed and urgent."][choice];
+      case 3: return primary > 70 ? "One focal point now carries the composition." : "The contrast is present, but the hierarchy could be more decisive.";
+      case 4: return choice > 0 && space > 20 ? "The grid creates order while the variation keeps it alive." : "Choose a structure and let alignment do more of the work.";
+      case 5: return [showA, showB, showC].filter(Boolean).length === 1 ? "One idea survives. The restraint makes it feel confident." : "The chapter asks for discipline: decide which element deserves to survive.";
+      case 6: return choice === choiceTwo ? "The ritual and atmosphere repeat the same signal. Recognition is forming." : "The sensory choices feel disconnected. Make them reinforce one product truth.";
+      case 7: return choice === 2 ? "The spread slows the reader down and lets the story breathe." : "Notice how this format changes pace. Decide what the reader should discover next.";
+      case 8: return `The object now occupies a ${["quiet luxury", "playful intimacy", "clinical precision"][choice]} territory.`;
+      case 9: return showA && showB && showC ? "The executions change by channel while the central belief stays intact." : "A campaign becomes stronger when each channel has a distinct job.";
+      case 10: return choice === choiceTwo ? "The creative choices reinforce one world." : "One decision breaks the spell. Adjust it before adding anything else.";
+      case 11: return !showA && showB && showC ? "The logo is gone, but the repeated behaviors still create recognition." : "Remove the name and rely on the system’s behaviors.";
+      case 12: return choice > 0 && choiceTwo > 0 ? "You are moving past appearance and identifying the strategic structure." : "Name the audience insight and channel role before judging the execution.";
+      default: return choice === 2 ? "The feedback protects the idea and gives the maker a useful next move." : "Lead with the central idea before discussing taste or polish.";
+    }
+  }, [lessonIndex, primary, secondary, space, choice, choiceTwo, showA, showB, showC]);
+
+  const renderControls = () => {
+    switch (lessonIndex) {
+      case 0:
+        return <><Range label="Message scale" value={primary} setValue={setPrimary} min={38} max={88} /><Range label="Supporting scale" value={secondary} setValue={setSecondary} min={14} max={46} /><Range label="Separation" value={space} setValue={setSpace} min={8} max={58} /></>;
+      case 1:
+        return <><Range label="Breathing room" value={space} setValue={setSpace} min={8} max={64} /><Toggle label="Keep eyebrow" value={showA} setValue={setShowA} /><Toggle label="Keep supporting copy" value={showB} setValue={setShowB} /><Toggle label="Keep decorative rule" value={showC} setValue={setShowC} /></>;
+      case 2:
+        return <><Choice label="Typographic voice" options={["Bold sans", "Editorial serif", "Condensed utility"]} value={choice} setValue={setChoice} /><Range label="Type scale" value={primary} setValue={setPrimary} min={42} max={86} /><Range label="Tracking" value={space} setValue={setSpace} min={8} max={52} /></>;
+      case 3:
+        return <><Range label="Focal scale" value={primary} setValue={setPrimary} min={38} max={92} /><Range label="Supporting weight" value={secondary} setValue={setSecondary} min={14} max={42} /><ColorControls background={background} ink={ink} accent={accent} setBackground={setBackground} setInk={setInk} setAccent={setAccent} /></>;
+      case 4:
+        return <><Choice label="Column system" options={["No grid", "Two columns", "Four columns"]} value={choice} setValue={setChoice} /><Choice label="Alignment" options={["Centered", "Left edge", "Asymmetrical"]} value={choiceTwo} setValue={setChoiceTwo} /><Range label="Gutter" value={space} setValue={setSpace} min={8} max={48} /></>;
+      case 5:
+        return <><p className="control-prompt">Choose what earns the spotlight. Try leaving only one.</p><Toggle label="Product" value={showA} setValue={setShowA} /><Toggle label="Feature list" value={showB} setValue={setShowB} /><Toggle label="Promotional badge" value={showC} setValue={setShowC} /><Range label="Isolation" value={space} setValue={setSpace} min={10} max={58} /></>;
+      case 6:
+        return <><Choice label="Product ritual" options={["Glaze", "Press", "Refresh"]} value={choice} setValue={setChoice} /><Choice label="Sensory atmosphere" options={["Glossy", "Tactile", "Cool"]} value={choiceTwo} setValue={setChoiceTwo} /><Range label="Repetition" value={primary} setValue={setPrimary} min={1} max={5} /></>;
+      case 7:
+        return <><Choice label="Editorial moment" options={["Cover", "Story opener", "Two-page spread"]} value={choice} setValue={setChoice} /><Range label="Headline scale" value={primary} setValue={setPrimary} min={40} max={90} /><Range label="Margin" value={space} setValue={setSpace} min={10} max={52} /></>;
+      case 8:
+        return <><Choice label="Emotional territory" options={["Quiet luxury", "Playful intimacy", "Clinical precision"]} value={choice} setValue={setChoice} /><Choice label="Light" options={["Soft", "Flash", "Hard"]} value={choiceTwo} setValue={setChoiceTwo} /><ColorControls background={background} ink={ink} accent={accent} setBackground={setBackground} setInk={setInk} setAccent={setAccent} /></>;
+      case 9:
+        return <><p className="control-prompt">Give each channel a role while protecting one central belief.</p><Toggle label="Social creates curiosity" value={showA} setValue={setShowA} /><Toggle label="Outdoor creates recognition" value={showB} setValue={setShowB} /><Toggle label="Experience creates participation" value={showC} setValue={setShowC} /></>;
+      case 10:
+        return <><Choice label="Light and setting" options={["Soft daylight", "Direct flash", "Stage shadow"]} value={choice} setValue={setChoice} /><Choice label="Type and movement" options={["Soft daylight", "Fast energy", "Measured stillness"]} value={choiceTwo} setValue={setChoiceTwo} /><Range label="Visual intensity" value={primary} setValue={setPrimary} min={35} max={88} /></>;
+      case 11:
+        return <><Toggle label="Show brand name" value={showA} setValue={setShowA} /><Toggle label="Repeat signature crop" value={showB} setValue={setShowB} /><Toggle label="Repeat brand phrase" value={showC} setValue={setShowC} /><Choice label="Brand behavior" options={["Precise", "Generous", "Provocative"]} value={choice} setValue={setChoice} /></>;
+      case 12:
+        return <><Choice label="Audience insight" options={["Not defined", "Belonging", "Self-expression"]} value={choice} setValue={setChoice} /><Choice label="Channel role" options={["Not defined", "Introduce", "Deepen", "Activate"]} value={choiceTwo} setValue={setChoiceTwo} /><textarea className="practice-textarea" aria-label="Campaign lesson learned" placeholder="What principle—not appearance—would you carry into another campaign?" /></>;
+      default:
+        return <><Choice label="First review priority" options={["Polish the details", "Make it trendier", "Protect the central idea"]} value={choice} setValue={setChoice} /><textarea className="practice-textarea" aria-label="Creative direction feedback" placeholder="Write one question that helps the designer see the next decision." /><Toggle label="Feedback explains why it matters" value={showA} setValue={setShowA} /></>;
+    }
+  };
+
+  return (
+    <div className={`exercise-shell practice-${lessonIndex + 1}`} data-reveal>
+      <div className="exercise-copy">
+        <span className="eyebrow">Interactive practice · {lesson.title}</span>
+        <h2>{practiceMeta[lessonIndex].title}</h2>
+        <p>{practiceMeta[lessonIndex].intro}</p>
+        {renderControls()}
+        <div className="feedback" role="status"><span>Studio note</span><p>{feedback}</p></div>
+      </div>
+      <div className="canvas-wrap">
+        <PracticeCanvas lessonIndex={lessonIndex} lesson={lesson} primary={primary} secondary={secondary} space={space} choice={choice} choiceTwo={choiceTwo} showA={showA} showB={showB} showC={showC} background={background} ink={ink} accent={accent} />
+        <div className="canvas-actions"><button onClick={reset}>Reset</button><button className={`primary ${completed ? "complete-button" : ""}`} onClick={completePractice}>{completed ? "Completed ✓" : "Mark practice complete"}</button></div>
+        <UploadWork uploads={uploads} handleUpload={handleUpload} removeUpload={removeUpload} />
+      </div>
+    </div>
+  );
+}
+
+function PracticeCanvas(props: { lessonIndex: number; lesson: Lesson; primary: number; secondary: number; space: number; choice: number; choiceTwo: number; showA: boolean; showB: boolean; showC: boolean; background: string; ink: string; accent: string }) {
+  const { lessonIndex, lesson, primary, secondary, space, choice, choiceTwo, showA, showB, showC, background, ink, accent } = props;
+  const style = { "--lab-space": `${space}px`, "--lab-primary": `${primary}px`, "--lab-secondary": `${secondary}px`, "--lab-bg": background, "--lab-ink": ink, "--lab-accent": accent } as React.CSSProperties;
+  const repetitions = Math.max(1, Math.round(primary));
+
+  if (lessonIndex === 5) return <div className="practice-canvas apple-lab" style={style}><span>FOCUS / 01</span>{showA && <div className="product-orb">Object</div>}{showB && <ul><li>Faster</li><li>Lighter</li><li>Smarter</li></ul>}{showC && <b>NEW</b>}<p>One experience.<br />Nothing extra.</p></div>;
+  if (lessonIndex === 6) return <div className={`practice-canvas rhode-lab mood-${choiceTwo}`} style={style}><span>{["THE GLAZE", "THE PRESS", "THE REFRESH"][choice]}</span><div className="ritual-row">{Array.from({ length: repetitions }).map((_, index) => <i key={index} />)}</div><strong>{["GLAZE", "PRESS", "COOL"][choice]}</strong><small>One product truth, repeated until it becomes a world.</small></div>;
+  if (lessonIndex === 7) return <div className={`practice-canvas editorial-lab editorial-${choice}`} style={style}><span>THE CREATIVE REVIEW / 07</span><strong>PACE<br /><em>the story.</em></strong><div className="editorial-image" /><p>Scale creates emotion. Cropping creates tension. Space creates rhythm.</p></div>;
+  if (lessonIndex === 8) return <div className={`practice-canvas desire-lab territory-${choice} light-${choiceTwo}`} style={style}><span>OBJECT STUDY</span><div className="desire-object">01</div><strong>{["WANT LESS.", "KEEP CLOSE.", "EXACTLY RIGHT."][choice]}</strong><small>The product is unchanged. The emotional value is not.</small></div>;
+  if (lessonIndex === 9) return <div className="practice-canvas campaign-lab" style={style}><strong>ONE<br />CITY.</strong><p>One shared idea, translated with purpose.</p><div className="channel-row">{showA && <i>SOCIAL<br /><b>Curiosity</b></i>}{showB && <i>OUTDOOR<br /><b>Recognition</b></i>}{showC && <i>LIVE<br /><b>Participation</b></i>}</div></div>;
+  if (lessonIndex === 10) return <div className={`practice-canvas direction-lab direction-${choice}-${choiceTwo}`} style={style}><span>ART DIRECTION BOARD</span><div className="direction-frame"><i /><i /><i /></div><strong>{["SOFT / HUMAN", "FLASH / ALIVE", "SHADOW / STILL"][choice]}</strong><small>Casting · Setting · Light · Type · Motion</small></div>;
+  if (lessonIndex === 11) return <div className={`practice-canvas brand-lab brand-${choice}`} style={style}>{showA && <span>STILL / FORM</span>}<div className="brand-crop">S</div>{showB && <><i /><i /></>}<strong>{showC ? ["MADE WITH CARE", "ROOM TO BREATHE", "QUESTION THE USUAL"][choice] : "A REPEATABLE BEHAVIOR"}</strong><small>{showA ? "Recognition can begin with a name." : "No logo. Does the system still belong?"}</small></div>;
+  if (lessonIndex === 12) return <div className="practice-canvas breakdown-lab" style={style}><span>CAMPAIGN AUTOPSY</span><strong>WHAT<br />MADE IT<br />COHERE?</strong><dl><div><dt>BIG IDEA</dt><dd>Belong here.</dd></div><div><dt>INSIGHT</dt><dd>{["Define the audience first", "People want belonging", "Identity is performed"][choice]}</dd></div><div><dt>CHANNEL ROLE</dt><dd>{["Choose a role", "Introduce", "Deepen", "Activate"][choiceTwo]}</dd></div></dl></div>;
+  if (lessonIndex === 13) return <div className="practice-canvas leader-lab" style={style}><span>CREATIVE REVIEW / 14</span><blockquote>“The work needs more.”</blockquote><strong>{["Polish is not yet the problem.", "Trend is not a strategy.", "What central idea are we protecting?"][choice]}</strong><p>{showA ? "Useful direction connects the recommendation to the reason." : "A preference without a reason is not direction."}</p></div>;
+
+  const className = lessonIndex === 1 ? "space-lab" : lessonIndex === 2 ? `type-lab type-${choice}` : lessonIndex === 3 ? "contrast-lab" : lessonIndex === 4 ? `grid-lab grid-${choice} align-${choiceTwo}` : "hierarchy-lab";
+  return <div className={`practice-canvas ${className}`} style={style}>{showA && <span className="canvas-label">THE CREATIVE STUDIO PRESENTS</span>}<strong>ONE<br />IDEA</strong>{showC && <div className="canvas-rule" />}{showB && <p>{lesson.title}<br />Chapter {lesson.number}</p>}<small>Make the central belief visible.<br />Let every choice reinforce it.</small></div>;
+}
+
+function Range({ label, value, setValue, min, max }: { label: string; value: number; setValue: (value: number) => void; min: number; max: number }) {
+  return <label>{label} <output>{value}</output><input type="range" min={min} max={max} value={value} onChange={(event) => setValue(Number(event.target.value))} /></label>;
+}
+
+function Toggle({ label, value, setValue }: { label: string; value: boolean; setValue: (value: boolean) => void }) {
+  return <label className="practice-toggle"><input type="checkbox" checked={value} onChange={(event) => setValue(event.target.checked)} /><span>{label}</span></label>;
+}
+
+function Choice({ label, options, value, setValue }: { label: string; options: string[]; value: number; setValue: (value: number) => void }) {
+  return <label className="practice-choice">{label}<select value={value} onChange={(event) => setValue(Number(event.target.value))}>{options.map((option, index) => <option key={option} value={index}>{option}</option>)}</select></label>;
+}
+
+function ColorControls({ background, ink, accent, setBackground, setInk, setAccent }: { background: string; ink: string; accent: string; setBackground: (value: string) => void; setInk: (value: string) => void; setAccent: (value: string) => void }) {
+  return <fieldset className="design-controls"><legend>Color relationships</legend><label>Background<input type="color" value={background} onChange={(event) => setBackground(event.target.value)} /></label><label>Type<input type="color" value={ink} onChange={(event) => setInk(event.target.value)} /></label><label>Accent<input type="color" value={accent} onChange={(event) => setAccent(event.target.value)} /></label></fieldset>;
 }
 
 function UploadWork({ uploads, handleUpload, removeUpload }: { uploads: { name: string; url: string; type: string }[]; handleUpload: (event: ChangeEvent<HTMLInputElement>) => void; removeUpload: (index: number) => void }) {
