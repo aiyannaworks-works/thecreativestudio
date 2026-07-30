@@ -47,6 +47,88 @@ const lessons: Lesson[] = [
   { number: "14", title: "Becoming a Creative Director", note: "Lead with judgment, clarity, and belief.", question: "What kind of creative leader do you intend to become?", concepts: ["Judgment", "Feedback", "Creative philosophy", "Leadership"], project: "Write and present a personal creative philosophy supported by three decisions from your work.", reflections: ["What will you protect?", "What will you never compromise?", "How will your leadership improve the work?"], coaching: ["What would a Creative Director question first?", "What do you believe good design should accomplish?", "What legacy do you hope your work leaves behind?"] },
 ];
 
+const conceptDescriptions: Record<string, string[]> = {
+  "01": [
+    "Dominance establishes the one element that should command attention before anything else.",
+    "Reading order choreographs where the eye begins, where it travels next, and where it finally rests.",
+    "Visual weight comes from scale, contrast, position, density, and space—not size alone.",
+  ],
+  "02": [
+    "Restraint is the confidence to remove anything that does not improve the message.",
+    "Grouping uses proximity to show which pieces of information belong together before they are read.",
+    "Pacing uses open space like silence in music, creating pauses that make each idea easier to absorb.",
+  ],
+  "03": [
+    "Voice is the personality typography gives language before the audience processes the words.",
+    "Scale changes the emotional volume of a message by controlling the relationship between large and small.",
+    "Pairing works when each typeface has a distinct job; variety without purpose weakens the system.",
+  ],
+  "04": [
+    "Emphasis identifies the decision that deserves attention first and makes the rest of the layout support it.",
+    "Difference creates meaning through opposites such as large and small, bold and quiet, dense and open.",
+    "A focal point gives the composition one hero instead of asking every element to compete.",
+  ],
+  "05": [
+    "Alignment creates invisible relationships that make separate elements feel organized and trustworthy.",
+    "Rhythm comes from repeating spacing, columns, and proportions while allowing the content to change.",
+    "Structure reduces random decisions by giving every element a system in which to belong.",
+  ],
+  "06": [
+    "Radical focus reduces the experience to the single idea the audience should remember tomorrow.",
+    "Product storytelling begins with the human experience or transformation, not a list of specifications.",
+    "End-to-end consistency makes every touchpoint—from the first image to the final interaction—feel intentionally connected.",
+    "Restraint gives the surviving idea more power by removing features, claims, and decoration that dilute it.",
+  ],
+  "07": [
+    "World building creates a distinct atmosphere around the product so the audience wants to enter the brand’s reality.",
+    "Sensory consistency repeats light, texture, skin, material, and language until they express one product truth.",
+    "Repetition turns a small set of disciplined choices into recognition rather than constantly inventing a new look.",
+    "Cultural relevance comes from understanding how the audience already sees, shares, and talks—not chasing every trend.",
+  ],
+  "08": [
+    "Narrative pacing controls when the reader moves quickly, pauses, or encounters a moment of visual silence.",
+    "Modular grids keep changing stories coherent by creating repeatable relationships rather than identical pages.",
+    "Editorial voice is the publication’s point of view expressed through typography, cropping, scale, and sequencing.",
+    "Image-text relationships allow words and photographs to interact as one composition instead of merely explaining each other.",
+  ],
+  "09": [
+    "Aspiration gives an ordinary object a larger emotional meaning by placing it inside a desirable way of living.",
+    "Tension holds attention through controlled contrast, cropping, incompleteness, or an unexpected relationship.",
+    "Sensory cues use light, material, texture, color, and proximity to make the audience imagine touch and experience.",
+    "Perceived value is shaped by the care, space, context, and confidence surrounding the object—not only the object itself.",
+  ],
+  "10": [
+    "The big idea is a simple, durable belief strong enough to generate many executions without losing its meaning.",
+    "Audience insight identifies a human truth that explains why people should care, not merely who they are demographically.",
+    "Message architecture decides what remains constant and what each channel is responsible for communicating.",
+    "Campaign cohesion makes every execution feel like another chapter of the same story rather than a matching set of graphics.",
+  ],
+  "11": [
+    "Art direction defines the world of the idea across casting, setting, styling, light, composition, typography, and motion.",
+    "Image making turns strategy into a specific visual point of view instead of searching for pictures that simply look attractive.",
+    "Creative territory establishes the emotional and cultural space the work is allowed to occupy—and the choices that fall outside it.",
+    "Collaboration gives photographers, writers, stylists, designers, and directors enough clarity to contribute without breaking the central belief.",
+  ],
+  "12": [
+    "Brand beliefs define what the organization consistently stands for before colors, fonts, or logos are chosen.",
+    "Behaviors turn those beliefs into repeatable actions across language, imagery, interaction, and experience.",
+    "Recognition codes are distinctive recurring cues—such as cropping, rhythm, color, or phrasing—that remain identifiable without a logo.",
+    "Tone of voice adapts to the moment while preserving the same underlying personality.",
+  ],
+  "13": [
+    "Insight reveals the human observation that made the campaign idea strategically relevant.",
+    "Story structure shows how the campaign creates curiosity, develops meaning, and gives the audience a role.",
+    "Channel roles explain why each format exists; social, outdoor, film, and experience should not all perform the same job.",
+    "Lessons learned translate the campaign into principles you can reuse without copying its appearance.",
+  ],
+  "14": [
+    "Judgment is the ability to identify which decision matters most when many possible improvements compete for attention.",
+    "Feedback becomes direction when it explains what is working, what is unclear, and why the next change matters.",
+    "A creative philosophy names the beliefs and standards that guide your choices even when no rulebook is present.",
+    "Leadership creates the conditions for stronger ideas to emerge through clarity, trust, questions, and thoughtful editing.",
+  ],
+};
+
 const workspaces = [
   { id: "brand", title: "Brand Builder", intro: "Define the beliefs and behaviors that make a brand recognizable.", fields: ["Brand beliefs", "Emotional territory", "Brand behaviors", "Tone of voice", "Brand principles", "Recognition strategy"] },
   { id: "campaign", title: "Campaign Breakdown", intro: "Document the strategic and creative system behind a campaign.", fields: ["Big Idea", "Audience", "Insight", "Emotional territory", "Story structure", "Typography", "Photography", "Motion", "Brand principles", "Lessons learned"] },
@@ -164,8 +246,6 @@ export default function Home() {
 
   const coachQuestion = currentLesson.coaching[coachStep % currentLesson.coaching.length];
 
-  const coachQuestion = currentLesson.coaching[coachStep % currentLesson.coaching.length];
-
   return (
     <main>
       <header className="site-header">
@@ -221,7 +301,7 @@ export default function Home() {
 
           <section className="chapter-foundation" data-reveal>
             <div><span className="eyebrow">Key concepts</span><h2>The decisions beneath the design.</h2></div>
-            <div className="concept-grid">{currentLesson.concepts.map((concept, index) => <article key={concept}><span>0{index + 1}</span><h3>{concept}</h3><p>Observe how this principle shapes recognition, meaning, and the audience&apos;s experience.</p></article>)}</div>
+            <div className="concept-grid">{currentLesson.concepts.map((concept, index) => <article key={concept}><span>0{index + 1}</span><h3>{concept}</h3><p>{conceptDescriptions[currentLesson.number][index]}</p></article>)}</div>
           </section>
 
           <PracticeLab key={activeLesson} lessonIndex={activeLesson} lesson={currentLesson} completed={completed} completePractice={completePractice} uploads={uploads} handleUpload={handleUpload} removeUpload={(index) => setUploads((current) => current.filter((_, itemIndex) => itemIndex !== index))} />
